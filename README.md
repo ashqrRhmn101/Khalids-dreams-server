@@ -10,10 +10,8 @@ Simple and clean backend API built with **Node.js, Express, MongoDB, and Mongoos
 
 ## 🚀 **Live API / Base URL**
 
-*(Add when deployed)*
-
 ```
-https://your-server-url.com
+https://khalids-dreams-server.vercel.app/
 ```
 
 Local development:
