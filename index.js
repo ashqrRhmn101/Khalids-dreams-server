@@ -46,7 +46,7 @@ async function run() {
       res.send(result);
     });
 
-     // Latest Products
+    // Latest Products
     app.get("/latest-products", async (req, res) => {
       const cursor = productCollection.find().sort({ createAt: -1 }).limit(6);
       const result = await cursor.toArray();
@@ -65,8 +65,53 @@ async function run() {
     app.post("/products", async (req, res) => {
       const product = req.body;
       product.createAt = new Date();
+      // product.createdAt = new Date(); it's right "createdAt" hobe
 
       const result = await productCollection.insertOne(product);
+      res.send(result);
+    });
+
+    // Update product API
+    app.patch("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateProducts = req.body;
+      const query = { _id: new ObjectId(id) };
+
+      const update = {
+        $set: {
+          productUrl: updateProducts.productUrl,
+          productTitle: updateProducts.productTitle,
+          shortDescription: updateProducts.shortDescription,
+          longDescription: updateProducts.longDescription,
+          email: updateProducts.email,
+          category: updateProducts.category,
+          price: updateProducts.price,
+          discountPrice: updateProducts.discountPrice,
+          stock: updateProducts.stock,
+          weight: updateProducts.weight,
+          tags: updateProducts.tags,
+          status: updateProducts.status,
+          createAt: updateProducts.createAt || new Date(),
+        },
+      };
+
+      try {
+        const result = await productCollection.updateOne(query, update);
+        res.send({ success: true, result });
+      } catch (error) {
+        console.error(error);
+        res
+          .status(500)
+          .send({ success: false, message: "Update failed", error });
+      }
+    });
+
+    // Delete Products
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     });
 
