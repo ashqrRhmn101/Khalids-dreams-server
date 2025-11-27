@@ -4,7 +4,7 @@ const app = express();
 require("dotenv").config();
 
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // Middleware
 app.use(express.json());
@@ -46,6 +46,14 @@ async function run() {
       res.send(result);
     });
 
+    // product get id.........
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+
     // create product apis
     app.post("/products", async (req, res) => {
       const product = req.body;
@@ -54,7 +62,6 @@ async function run() {
       const result = await productCollection.insertOne(product);
       res.send(result);
     });
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
