@@ -41,7 +41,14 @@ async function run() {
         query.email = email;
       }
 
-      const cursor = productCollection.find(query);
+      const cursor = productCollection.find(query).sort({ createAt: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+     // Latest Products
+    app.get("/latest-products", async (req, res) => {
+      const cursor = productCollection.find().sort({ createAt: -1 }).limit(6);
       const result = await cursor.toArray();
       res.send(result);
     });
